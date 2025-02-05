@@ -1,0 +1,20 @@
+{
+  "appName": "Opay",
+  "error": "Lỗi",
+  "ok": "OK",
+  "accept": "Đồng ý",
+  "cancel": "Huỷ",
+  "loading": "Loading...",
+  "back": "Quay lại",
+  "next": "Tiếp theo",
+  "toContinue": "Tiếp tục",
+  "share": "Chia sẻ",
+  "edit": "Chỉnh sửa",
+  "save": "Lưu",
+  "ignore": "Bỏ qua",
+  "agree": "Chấp nhận",
+  "permission": "Quyền",
+  "commonError": "Có lỗi xảy ra, vui lòng thử lại sau.",
+  "errorConnect": "Lỗi kết nối, vui lòng kiểm tra kết nối mạng và thử lại.",
+  "free": "Miễn phí"
+}
