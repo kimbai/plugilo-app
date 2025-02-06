@@ -17,7 +17,8 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:plugilo/core/common/cubit/auth_cubit.dart' as _i257;
 import 'package:plugilo/core/common/cubit/theme_cubit.dart' as _i824;
 import 'package:plugilo/core/di/injection.dart' as _i1034;
-import 'package:plugilo/core/network/dio_client.dart' as _i992;
+import 'package:plugilo/core/network/api_client.dart' as _i51;
+import 'package:plugilo/core/network/auth_client.dart' as _i440;
 import 'package:plugilo/data/local/app_config_local_data_source.dart' as _i565;
 import 'package:plugilo/data/local/auth_local_data_source.dart' as _i146;
 import 'package:plugilo/data/remote/app_config_remote_data_source.dart'
@@ -26,6 +27,8 @@ import 'package:plugilo/data/remote/auth_remote_data_source.dart' as _i533;
 import 'package:plugilo/data/repo/app_config_repository.dart' as _i538;
 import 'package:plugilo/data/repo/auth_repository.dart' as _i424;
 import 'package:plugilo/data/repo/firebase_message_repository.dart' as _i735;
+import 'package:plugilo/presentation/sign_in/cubit/sign_in_cubit.dart' as _i739;
+import 'package:plugilo/presentation/splash/cubit/splash_cubit.dart' as _i835;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -48,11 +51,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i361.Dio>(() => injectionModule.dio);
     gh.factory<_i892.FirebaseMessaging>(
         () => injectionModule.firebaseMessaging);
+    gh.factory<_i835.SplashCubit>(() => _i835.SplashCubit());
     gh.factory<_i735.FirebaseMessageRepository>(() =>
         _i735.FirebaseMessageRepositoryImpl(gh<_i892.FirebaseMessaging>()));
     gh.factory<_i499.AppConfigRemoteDataSource>(
         () => const _i499.AppConfigRemoteDataSourceImpl());
-    gh.singleton<_i992.DioClient>(() => _i992.DioClient.from(gh<_i361.Dio>()));
+    gh.singleton<_i440.AuthClient>(() => _i440.AuthClient(gh<_i361.Dio>()));
+    gh.singleton<_i51.ApiClient>(() => _i51.ApiClient(gh<_i361.Dio>()));
     gh.factory<_i565.AppConfigLocalDataSource>(
         () => _i565.AppConfigLocalDataSourceImpl(
               gh<_i558.FlutterSecureStorage>(),
@@ -65,7 +70,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i146.AuthLocalDataSource>(
         () => _i146.AuthLocalDataSourceImpl(gh<_i558.FlutterSecureStorage>()));
     gh.factory<_i533.AuthRemoteDataSource>(
-        () => _i533.AuthRemoteDataSourceImpl(gh<_i992.DioClient>()));
+        () => _i533.AuthRemoteDataSourceImpl(gh<_i440.AuthClient>()));
     gh.singleton<_i824.ThemeCubit>(() =>
         _i824.ThemeCubit(appConfigRepository: gh<_i538.AppConfigRepository>()));
     gh.factory<_i424.AuthRepository>(() => _i424.AuthRepositoryImpl(
@@ -74,6 +79,8 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.singleton<_i257.AuthCubit>(
         () => _i257.AuthCubit(authRepository: gh<_i424.AuthRepository>()));
+    gh.factory<_i739.SignInCubit>(
+        () => _i739.SignInCubit(gh<_i424.AuthRepository>()));
     return this;
   }
 }

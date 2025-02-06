@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:plugilo/core/common/cubit/app_cubit_observer.dart';
@@ -18,10 +17,10 @@ import 'package:plugilo/core/router/app_router.dart';
 import 'package:plugilo/core/theme/theme.dart';
 import 'package:plugilo/core/utils/notification_helper.dart';
 import 'package:plugilo/data/repo/firebase_message_repository.dart';
-import 'package:plugilo/generated/assets.gen.dart';
+import 'package:plugilo/main/app_flavor.dart';
 
-void main() async {
-  await _configApp();
+void mainCommon(Flavor flavor) async {
+  await _configApp(flavor);
 
   runApp(
     MultiBlocProvider(
@@ -66,7 +65,7 @@ class MainApp extends StatelessWidget {
   }
 }
 
-Future<void> _configApp() async {
+Future<void> _configApp(Flavor appFlavor) async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -90,7 +89,7 @@ Future<void> _configApp() async {
   //   return true;
   // };
   // env
-  await dotenv.load(fileName: Assets.env.aEnvProd);
+  AppConfig.shared = AppConfig.create(flavor: appFlavor);
   // path
   // usePathUrlStrategy();
   // state observer

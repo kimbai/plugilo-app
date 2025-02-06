@@ -1,16 +1,16 @@
 // coverage:ignore-file
 import 'package:injectable/injectable.dart';
 import 'package:plugilo/core/network/api_response.dart';
-import 'package:plugilo/core/network/dio_client.dart';
-import 'package:plugilo/domain/auth/access_token.dart';
+import 'package:plugilo/core/network/auth_client.dart';
+import 'package:plugilo/domain/response/login_response.dart';
 
 abstract class AuthRemoteDataSource {
   const AuthRemoteDataSource();
 
   void updateAccessToken(String? accessToken);
 
-  Future<ApiResponse<AccessToken>> signIn({
-    required String phoneNo,
+  Future<LoginResponse> signIn({
+    required String userName,
     required String password,
   });
 
@@ -20,7 +20,7 @@ abstract class AuthRemoteDataSource {
 sealed class Endpoint {
   const Endpoint._();
 
-  static const signIn = 'ite-ew-mobile-service/auth/login';
+  static const signIn = 'api/v2/login';
   static const logout = 'ite-ew-mobile-service/auth/logout';
 }
 
@@ -28,7 +28,7 @@ sealed class Endpoint {
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   const AuthRemoteDataSourceImpl(this._client);
 
-  final DioClient _client;
+  final AuthClient _client;
 
   @override
   void updateAccessToken(String? accessToken) {
@@ -40,16 +40,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<ApiResponse<AccessToken>> signIn({
-    required String phoneNo,
+  Future<LoginResponse> signIn({
+    required String userName,
     required String password,
   }) async {
     try {
-      final response = await _client.post(Endpoint.signIn, data: {
-        'PhoneNo': phoneNo,
-        'Password': password,
+      final response = await _client.post("${Endpoint.signIn}?redirect_uri=plugilo.mobile://welcome", data: {
+        'username': userName,
+        'password': password,
       });
-      return ApiResponse.fromJson(response.data, AccessToken.fromJson);
+      return LoginResponse.fromJson(response.data);
     } on ApiRespExeption {
       rethrow;
     }

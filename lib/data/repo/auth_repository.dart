@@ -6,6 +6,7 @@ import 'package:plugilo/data/local/auth_local_data_source.dart';
 import 'package:plugilo/data/remote/auth_remote_data_source.dart';
 import 'package:plugilo/domain/auth/access_token.dart';
 import 'package:plugilo/domain/auth/user.dart';
+import 'package:plugilo/domain/response/login_response.dart';
 
 abstract class AuthRepository {
   const AuthRepository();
@@ -22,8 +23,8 @@ abstract class AuthRepository {
   Future<void> clearLoggedUserInfo();
 
   // remote data source
-  ResultFuture<ApiResponse<AccessToken>> signIn({
-    required String phoneNo,
+  ResultFuture<LoginResponse> signIn({
+    required String userName,
     required String password,
   });
 
@@ -61,13 +62,13 @@ class AuthRepositoryImpl implements AuthRepository {
 
   // remote data source
   @override
-  ResultFuture<ApiResponse<AccessToken>> signIn({
-    required String phoneNo,
+  ResultFuture<LoginResponse> signIn({
+    required String userName,
     required String password,
   }) async {
     try {
       final result = await _remoteDataSource.signIn(
-        phoneNo: phoneNo,
+        userName: userName,
         password: password,
       );
       return Right(result);

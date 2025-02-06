@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:injectable/injectable.dart';
 import 'package:network_logger/network_logger.dart';
 import 'package:plugilo/core/common/event_hub/event_hub.dart';
@@ -12,20 +11,20 @@ import 'package:plugilo/core/config/constants.dart';
 import 'package:plugilo/core/network/api_meta.dart';
 import 'package:plugilo/core/network/api_response.dart';
 
-@singleton
 class DioClient {
-  DioClient(this._dio) {
+  DioClient(this._dio, String baseUrl) {
     _dio
-      ..options.baseUrl = dotenv.get('API_BASE_URL')
+      ..options.baseUrl = baseUrl
       ..options.connectTimeout = Constants.connectionTimeout
       ..options.receiveTimeout = Constants.receiveTimeout
       ..options.responseType = ResponseType.json
       ..interceptors.add(CurlLoggerDioInterceptor())
       ..interceptors.add(DioNetworkLogger());
+    // ..interceptors.add(DioInterceptor());
     (_dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () => HttpClient()..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
   @factoryMethod
-  factory DioClient.from(Dio dio) => DioClient(dio);
+  factory DioClient.from(Dio dio, String baseUrl) => DioClient(dio, baseUrl);
 
   // dio instance
   final Dio _dio;
